@@ -4,11 +4,12 @@ import Burger from '../../components/Burger/Burger'
 import BuildControls from '../../components/Burger/BuildControls/BuilControls'
 import Modal from '../../components/UI/Modal/Modal'
 import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary'
-import axios from '../../axios-orders';
+
 import Spinner from '../../components/UI/Spinner/Spinner';
 import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
 import {connect} from 'react-redux'
-import * as actionTypes from '../../store/actions' 
+import * as actions from '../../store/actions/index' 
+import axios from '../../axios-orders';
 
 // import BackDrop from '../../components/UI/Backdrop/Backdrop'
 
@@ -18,25 +19,26 @@ import * as actionTypes from '../../store/actions'
         
          
         //  purchasable:false,
-         purchasing:false,
-         loading:false,
-         error:false
+         purchasing:false
+        //  loading:false,
+        //  error:false
      }
 
 
 
-// componentDidMount(){
+componentDidMount(){
 
-//         //    axios.get('/ingredients.json')
-//         //    .then(response=>{
-//         //        this.setState({ingredients:response.data})
-//         //    })
-//         //    .catch(error=>{
-//         //        this.setState({error:true})
+    this.props.onInitIngredients();
+        //    axios.get('/ingredients.json')
+        //    .then(response=>{
+        //        this.setState({ingredients:response.data})
+        //    })
+        //    .catch(error=>{
+        //        this.setState({error:true})
 
-//         //    })
+        //    })
 
-//      }
+     }
 purchasedHandler=()=>{
 
     this.setState({
@@ -59,7 +61,7 @@ purchaseContinueHandler=()=>{
 //    queryParams.push('price='+this.props.price);
    
 //     const queryString=queryParams.join('&');
-
+    this.props.onInitPurchase();
     this.props.history.push({
         pathname:'/checkout',
         // search:'?'+queryString
@@ -133,7 +135,7 @@ updatePurchaseState=(ingredients)=>{
       console.log(this.props.ings)
     
 
-       let burger=this.state.error?<p>Ingredients cannot be loaded</p>:<Spinner/>
+       let burger=this.props.error?<p>Ingredients cannot be loaded</p>:<Spinner/>
        if(this.props.ings)
        {
            burger=(  
@@ -156,9 +158,9 @@ updatePurchaseState=(ingredients)=>{
                             purchaseContinued={this.purchaseContinueHandler}
                             ingredients={this.props.ings}/>;
                 
-            if(this.state.loading){
-                orderSummary=<Spinner/>
-                }
+            // if(this.state.loading){
+            //     orderSummary=<Spinner/>
+            //     }
        
         }
         return (
@@ -181,15 +183,19 @@ updatePurchaseState=(ingredients)=>{
 const mapStateToProps=(state)=>{
 
     return{
-        ings:state.ingredients,
-        price:state.totalPrice
+        ings:state.burgerBuilder.ingredients,
+        price:state.burgerBuilder.totalPrice,
+        error:state.burgerBuilder.error,
+        
     }
 }
 
 const mapDispatchToProps=(dispatch)=>{
    return{
-       onIngredientAdded:(ingredientName)=>dispatch({type:actionTypes.ADD_INGREDIENT,ingredientName:ingredientName}),
-       onIngredientRemoved:(ingredientName)=>dispatch({type:actionTypes.REMOVE_INGREDIENT,ingredientName:ingredientName})
+       onIngredientAdded:(ingredientName)=>dispatch(actions.addIngredient(ingredientName)),
+       onIngredientRemoved:(ingredientName)=>dispatch(actions.removeIngredient(ingredientName)),
+       onInitIngredients:()=>dispatch(actions.initIngredients()),
+       onInitPurchase:()=>dispatch(actions.purchaseInit())
    }
 }
 
