@@ -13,7 +13,7 @@ import axios from '../../axios-orders';
 
 // import BackDrop from '../../components/UI/Backdrop/Backdrop'
 
- class BurgerBuilder extends Component {
+ export class BurgerBuilder extends Component {
   
  state={
         
