@@ -90,44 +90,7 @@ updatePurchaseState=(ingredients)=>{
 
 }
  
-// addIngredientHandler=(type)=>{
 
-//     const oldCount=this.state.ingredients[type];
-//     const updatedCount=oldCount+1;
-//     const updatedIngridients={
-//         ...this.state.ingredients
-//     };
-//     updatedIngridients[type]=updatedCount;
-//     const priceAddition=INGREDIENT_PRICES[type];
-//     const oldPrice=this.state.totalPrice;
-//     const updatedPrice=oldPrice+priceAddition;
-
-//     this.setState({ingredients:updatedIngridients,
-//                    totalPrice:updatedPrice});
-//      this.updatePurchaseState(updatedIngridients);
-//  }    
-
- 
-//  removeIngredientHandler=(type)=>{
- 
-//     const oldCount=this.state.ingredients[type];
-//     if(oldCount===0)
-//     return;
-
-//     const updatedCount=oldCount-1;
-//     const updatedIngridients={
-//         ...this.state.ingredients
-//     };
-//     updatedIngridients[type]=updatedCount;
-//     const priceRemoval=INGREDIENT_PRICES[type];
-//     const oldPrice=this.state.totalPrice;
-//     const updatedPrice=oldPrice-priceRemoval;
-
-//     this.setState({ingredients:updatedIngridients,
-//                    totalPrice:updatedPrice});
-//      this.updatePurchaseState(updatedIngridients);
-//  }   
- 
  
 
     render() {
@@ -138,9 +101,7 @@ updatePurchaseState=(ingredients)=>{
        
        let orderSummary=null;
 
-      console.log(this.props.ings)
     
-
        let burger=this.props.error?<p>Ingredients cannot be loaded</p>:<Spinner/>
        if(this.props.ings)
        {
