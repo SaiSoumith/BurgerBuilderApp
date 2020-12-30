@@ -7,7 +7,11 @@ import Input from '../../../components/UI/Input/Input'
 import {connect} from 'react-redux';
 import withErrorHandler from '../../../hoc/withErrorHandler/withErrorHandler'
 import * as actions from '../../../store/actions/index'
- class ContactData extends Component {
+
+import { updateObject,checkValidity} from '../../../shared/utility';
+
+
+class ContactData extends Component {
   state = {
     orderForm: {
         name: {
@@ -97,42 +101,21 @@ import * as actions from '../../../store/actions/index'
 }
   
 
-checkValidity(value,rules){
- let isValid =true;
- if (!rules) {
-  return true;
-}
- if(rules.required){
-   isValid=value.trim()!=='' && isValid
- }
- if(rules.minLength){
-   isValid=value.length>=rules.minLength && isValid
- }
- if(rules.maxLength){
-  isValid=value.length<=rules.maxLength && isValid
-}
-
-if (rules.isEmail) {
-  const pattern = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
-  isValid = pattern.test(value) && isValid
-}
-
-if (rules.isNumeric) {
-  const pattern = /^\d+$/;
-  isValid = pattern.test(value) && isValid
-}
-
- return isValid;
-}
 
 onChangeHandler=(event,id)=>{
 
-  const updatedOrderForm={...this.state.orderForm};
-  const updatedFormElement={...updatedOrderForm[id]}
-  updatedFormElement.value=event.target.value;
-  updatedFormElement.valid=this.checkValidity(updatedFormElement.value,updatedFormElement.validation)
-  updatedFormElement.touched=true;
-  updatedOrderForm[id]=updatedFormElement;
+  
+  const updatedFormElement = updateObject(this.state.orderForm[id], {
+    value: event.target.value,
+    valid: checkValidity(event.target.value, this.state.orderForm[id].validation),
+    touched: true
+});
+
+
+  const updatedOrderForm = updateObject(this.state.orderForm, {
+    [id]: updatedFormElement
+});
+
   let formIsValid = true;
   for (let inputIdentifier in updatedOrderForm) {
       formIsValid = updatedOrderForm[inputIdentifier].valid && formIsValid;
@@ -155,12 +138,13 @@ onChangeHandler=(event,id)=>{
      const order={
          ingredients:this.props.ings,
          price:this.props.price,
-         orderData:formData
+         orderData:formData,
+         userId:this.props.userId
         //  customer: this.state
             
      }
 
-     this.props.onOrderBurger(order);
+     this.props.onOrderBurger(order,this.props.token);
      
     // axios.post('./orders.json',order)
     //   .then(response=>{
@@ -221,7 +205,9 @@ const mapStateToProps=(state)=>{
   return{
       ings:state.burgerBuilder.ingredients,
       price:state.burgerBuilder.totalPrice,
-      loading:state.order.loading
+      loading:state.order.loading,
+      token:state.auth.token,
+      userId: state.auth.userId
   }
 }
 

@@ -19,12 +19,12 @@ if(props.openState){
            show={props.openState}
            clicked={props.closeHandler}   />
        
-        <div className={attachedClasses.join(' ')}>
+        <div className={attachedClasses.join(' ')} onClick={props.closeHandler} >
         <div className={classes.Logo}>
                 <Logo />
             </div>
         <nav>
-            <NavigationItems/>
+            <NavigationItems isAuthenticated={props.isAuth}/>
         </nav>
         </div>
             
